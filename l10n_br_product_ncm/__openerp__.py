@@ -20,17 +20,18 @@
 ##############################################################################
 {
     'name': 'NCM for Product Variants',
-    'version': '0.1',
-    'author': 'Kmee',
-    "category": "Localization",
+    'summary': 'Fiscal classifications for Product Variants',
+    'version': '8.0.0.1.0',
+    'author': 'KMEE,Odoo Community Association (OCA)',
+    'website': 'https://odoo-community.org/',
+    'category': "Localization",
     'license': 'AGPL-3',
     'depends': [
         'l10n_br_account_product',
     ],
-    'contributors': [
-        "Kmee",
+    'data': [
+      'views/view.xml'
     ],
-    "installable": True,
+    'installable': True,
     'auto_install': False,
-    'description': "Allows saving different NCM's for each product variant.",
 }

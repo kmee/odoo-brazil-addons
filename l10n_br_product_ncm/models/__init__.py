@@ -20,3 +20,4 @@
 ##############################################################################
 
 from . import product_product
+from . import account_product_fiscal_classification

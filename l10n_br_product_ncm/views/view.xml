@@ -1,0 +1,92 @@
+<openerp>
+    <data>
+        <record id="l10n_br_product_product_ncm_product_template_form" model="ir.ui.view">
+			<field name="name">l10n_br_product_ncm.product.product.form</field>
+			<field name="model">product.product</field>
+			<field name="inherit_id" ref="product.product_normal_form_view" />
+			<field name="arch" type="xml">
+                <field name="service_type_id" position="before">
+                    <field name="fiscal_classification_id" attrs="{'required': [('fiscal_type', '=', 'product')]}" domain="[('type', '=', 'normal')]"/>
+                    <field name="origin" attrs="{'required': [('fiscal_type', '=', 'product')]}" />
+                </field>
+            </field>
+        </record>
+
+        <record id="l10n_br_product_template_ncm_product_template_form" model="ir.ui.view">
+			<field name="name">l10n_br_product_ncm.product.template.form</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="l10n_br_account_product.l10n_br_account_product_template_form" />
+			<field name="arch" type="xml">
+                <field name="fiscal_classification_id" position="replace"></field>
+				<field name="origin" position="replace"></field>
+            </field>
+        </record>
+
+        <!-- Define: product.template -->
+        <record id="view_product_product_search" model="ir.ui.view">
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after">
+                    <field name="fiscal_classification_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_product_product_tree" model="ir.ui.view">
+            <field name="model">product.product</field>
+            <field name="priority" eval="100"/>
+            <field name="arch" type="xml">
+                <tree string="Products" colors="gray:active == False;">
+                    <field name="name"/>
+                    <field name="list_price"/>
+                    <field name="active" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_product_list_by_fiscal_classification" model="ir.actions.act_window">
+            <field name="name">Variantes</field>
+            <field name="res_model">product.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="view_id" ref="view_product_product_tree" />
+            <field name="search_view_id" ref="view_product_product_search" />
+            <field name="domain">['|', ('active', '=', False), ('active', '=', True)]</field>
+            <field name="context">{'search_default_fiscal_classification_id': active_id}</field>
+        </record>
+
+		<record id="l10n_br_product_product_ncm" model="ir.ui.view">
+			<field name="name">l10n_br_product_ncm.fiscal_classification_form</field>
+			<field name="model">account.product.fiscal.classification</field>
+			<field name="inherit_id" ref="account_product_fiscal_classification.view_account_product_fiscal_classification_form"/>
+			<field name="arch" type="xml">
+                <xpath expr="//div[@name='buttons']" position="inside">
+                                <button type="action"
+                                    class="oe_stat_button"
+                                    id="invoice_button"
+                                    icon="fa-bars"
+                                    name="%(action_product_list_by_fiscal_classification)d"
+                                    context="{'search_default_fiscal_classification_id': active_id}"
+                                    attrs="{'invisible': [('product_product_qty', '=', 0)]}">
+                                    <div><strong><field name="product_product_qty"/></strong><br/>Variantes</div>
+                                </button>
+				</xpath>
+            </field>
+        </record>
+
+
+        <record id="ncm_view_account_product_fiscal_classification_tree" model="ir.ui.view">
+            <field name="name">l10n_br_product_ncm.fiscal_classification_form</field>
+            <field name="model">account.product.fiscal.classification</field>
+            <field name="inherit_id" ref="account_product_fiscal_classification.view_account_product_fiscal_classification_tree"/>
+            <field name="arch" type="xml">
+                    <field name="product_tmpl_qty" position="replace">
+                        <field name="product_product_qty" position="replace"/>
+                    </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
