@@ -35,7 +35,7 @@ class ProductProduct(models.Model):
         required=True, change_default=True, domain="[('type','=','normal')]",
         help="Select category for the current product")
     origin = fields.Selection(PRODUCT_ORIGIN, 'Origem')
-    fci = fields.Char('FCI do Produto', size=36)
+    #fci = fields.Char('FCI do Produto', size=36)
 
 
     @api.multi
