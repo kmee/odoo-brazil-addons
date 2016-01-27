@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="l10n_br_sale_add_variants_form">
+            <field name="name">l10n_br.sale.add.variants.form</field>
+            <field name="model">sale.add.variants</field>
+            <field name="inherit_id" ref="sale_order_add_variants.sale_add_variants_form" />
+            <field name="arch" type="xml">
+                    <xpath expr="//field[@name='variant_line_ids']" position="replace">
+                        <field name="variant_line_ids" mode="tree" nolabel="1" >
+                            <tree string="Variants" editable="top">
+                                <field name="product_id" />
+                                <field name="product_uom_qty" />
+                                <field name="product_uom" groups="product.group_uom" />
+                                <field name="discount" groups="sale.group_discount_per_so_line" />
+                            </tree>
+                        </field>
+                    </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
