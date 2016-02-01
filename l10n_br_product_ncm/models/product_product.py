@@ -36,6 +36,9 @@ class ProductProduct(models.Model):
         help="Select category for the current product")
     origin = fields.Selection(PRODUCT_ORIGIN, 'Origem')
     fci = fields.Char('FCI do Produto', size=36)
+    fiscal_category_default_ids = fields.One2many(
+        'l10n_br_account.product.category', 'product_tmpl_id',
+        u'Categoria de Operação Fiscal Padrões')
 
     @api.multi
     def write(self, vals):
@@ -91,3 +94,29 @@ class ProductTemplate(models.Model):
         to the product(s); Otherwise, find the correct Fiscal classification,
         depending of the taxes, or create a new one, if no one are found."""
         return
+
+class AccountFiscalPositionRule(models.Model):
+    _inherit = 'account.fiscal.position.rule'
+
+    def product_fiscal_category_map(self, product_id, fiscal_category_id,
+                                    to_state_id=None):
+        result = None
+
+        if not product_id or not fiscal_category_id:
+            return result
+        fiscal_category = self.env[
+            'l10n_br_account.product.category'].search(
+            [('product_tmpl_id', '=', product_id),
+             ('fiscal_category_source_id', '=', fiscal_category_id),
+             '|', ('to_state_id', '=', False),
+             ('to_state_id', '=', to_state_id)])
+        if fiscal_category:
+            result = fiscal_category[0].fiscal_category_destination_id.id
+        return result
+
+
+class L10n_brAccountProductFiscalCategory(models.Model):
+    _inherit = 'l10n_br_account.product.category'
+
+    product_tmpl_id = fields.Many2one(
+        'product.product', 'Produto', ondelete='cascade')
