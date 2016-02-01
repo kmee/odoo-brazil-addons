@@ -33,12 +33,12 @@ class product_fci(models.Model):
     lines_ids = fields.Many2many('product_fci.from.product.template.lines',
                                  'line_id', 'product_line_rel',
                                  String='Produtos')
-    # fci = fields.Char("FCI")
+    fci = fields.Char("FCI")
     fci_lines = fields.One2many('l10n_br.fci.line', 'product_id',
                                 'Product lines')
 
 
-class ProductProduct(models.Model):
-    _inherit = "product.product"
-
-    fci = fields.Char('FCI do Produto', size=36)
+#class ProductProduct(models.Model):
+#    _inherit = "product.product"
+#
+#    fci = fields.Char('FCI do Produto', size=36)
