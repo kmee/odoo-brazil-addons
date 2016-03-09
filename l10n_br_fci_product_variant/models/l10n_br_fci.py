@@ -108,11 +108,11 @@ class L10nBrFci(models.Model):
 
                 # CHECA SE PRODUTOS NO ARQUIVO SÃO IGUAIS AOS DA TELA
                 for produtos_tela in self.fci_line:
-                        if produtos_tela.default_code in \
-                                res_importados['default_code']:
-                            resp = True
-                        else:
-                            resp = False
+                    if produtos_tela.default_code in \
+                            res_importados['default_code']:
+                        resp = True
+                    else:
+                        resp = False
                 if resp:
                     self.partner_id = company_id[0]
                     self.hash_code = res_importados['hash_code']
@@ -123,7 +123,7 @@ class L10nBrFci(models.Model):
 
                     for line, fci_code in zip(
                             self.fci_line, res_importados['fci_codes']):
-                            line.fci = fci_code
+                        line.fci = fci_code
 
                 # SE TUDO DER ERRADO
                 else:
@@ -167,24 +167,44 @@ class L10nBrFciLine(models.Model):
                     (100 * record.valor_parcela_importada) / record.list_price)
 
     # guarda o id da fci pertencente
-    l10n_br_fci_id = fields.Many2one('l10n_br.fci', u'Código do arquivo FCI',
-                                     select=True)
-    product_id = fields.Many2one('product.product', string='Produto',
-                                 required=True, readonly=True)
-    default_code = fields.Char(u'Código', related='product_id.default_code',
-                               readonly=True)
-    name = fields.Char('Nome', related='product_id.name', readonly=True)
-    ean13 = fields.Char('EAN13', related='product_id.ean13', readonly=True)
-    list_price = fields.Float(u'Preço', related='product_id.list_price',
-                              readonly=True)
-    product_uom = fields.Many2one('product.uom', required=True,
-                                  readonly=True)
+    l10n_br_fci_id = fields.Many2one(
+        'l10n_br.fci',
+        u'Código do arquivo FCI',
+        select=True)
+    product_id = fields.Many2one(
+        'product.product',
+        string='Produto',
+        required=True,
+        readonly=True)
+    default_code = fields.Char(
+        string=u'Código',
+        related='product_id.default_code',
+        readonly=True)
+    name = fields.Char(
+        string='Nome',
+        related='product_id.name',
+        readonly=True)
+    ean13 = fields.Char(
+        string='EAN13',
+        related='product_id.ean13',
+        readonly=True)
+    list_price = fields.Float(
+        string=u'Preço',
+        related='product_id.list_price')
+    product_uom = fields.Many2one(
+        'product.uom',
+        required=True,
+        readonly=True)
     fiscal_classification_id = fields.Char(
         string='NCM',
         related='product_id.fiscal_classification_id.code',
         readonly=True)
-    fci = fields.Char('FCI', readonly=True)
-    valor_parcela_importada = fields.Float(u'Valor parcela importação')
-    conteudo_importacao = fields.Float(u'Conteúdo importação',
-                                       compute='_calc_conteudo_importacao',
-                                       readonly=True)
+    fci = fields.Char(
+        string='FCI',
+        readonly=True)
+    valor_parcela_importada = fields.Float(
+        string=u'Valor parcela importação')
+    conteudo_importacao = fields.Float(
+        string=u'Conteúdo importação',
+        compute='_calc_conteudo_importacao',
+        readonly=True)
