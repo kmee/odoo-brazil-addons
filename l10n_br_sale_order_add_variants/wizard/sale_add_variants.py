@@ -29,6 +29,7 @@ class SaleAddVariants(models.TransientModel):
         result = {}
         ctx = dict(self.env.context)
         sale_order = self.env['sale.order'].browse(ctx.get('active_id'))
+        order_line_obj = self.env['sale.order.line']
         for line in self.variant_line_ids:
             if not line.product_uom_qty:
                 continue
@@ -53,7 +54,7 @@ class SaleAddVariants(models.TransientModel):
                 'quantity': line.product_uom_qty
             }
             )
-            result = sale_order.order_line.with_context(
+            result = order_line_obj.with_context(
                 ctx).product_id_change(
                 pricelist=sale_order.pricelist_id.id,
                 product=line_values['product_id'],
@@ -65,7 +66,7 @@ class SaleAddVariants(models.TransientModel):
             taxes = result['value']['tax_id']
             result['value']['tax_id'] = [[6, 0, (tax.id for tax in taxes)]]
             line_values.update(result['value'])
-            sale_order.order_line.with_context(ctx).create(line_values)
+            order_line_obj.with_context(ctx).create(line_values)
 
 class SaleAddVariantsLine(models.TransientModel):
     _inherit = 'sale.add.variants.line'
