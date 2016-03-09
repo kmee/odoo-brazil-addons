@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Brazillian 5 acts module for OpenERP
-#    Copyright (C) 2015 KMEE (http://www.kmee.com.br)
+#    Copyright (C) 2016 KMEE (http://www.kmee.com.br)
 #    @author Bianca Tella <bianca.tella@kmee.com.br>
+#    @author Luis Felipe Miléo <mileo@kmee.com.br>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@
 ##############################################################################
 
 from openerp import models, fields, api
-from openerp.addons.l10n_br_fci.fci import fci
+from openerp.addons.l10n_br_fci_product_variant.fci import fci
 from openerp.exceptions import Warning
 
 
@@ -75,10 +75,10 @@ class L10nBrFci(models.Model):
                                           ('invisible', False)]})
     name = fields.Char('Nome',
                        default=lambda self: self.env['ir.sequence'].get(
-                           'fci.sequence') or '', )
+                           'fci.sequence.variant') or '', )
     file_name = fields.Char('Nome',
                             default=lambda self: (self.env['ir.sequence'].get(
-                                'fci.sequence') + '.txt') or '', )
+                                'fci.sequence.variant') + '.txt') or '', )
 
     @api.multi
     def action_create_fci(self):
@@ -101,7 +101,7 @@ class L10nBrFci(models.Model):
                 for default_code, fci_code in zip(
                         res_importados['default_code'],
                         res_importados['fci_codes']):
-                    product_id = self.env['product.template'].search(
+                    product_id = self.env['product.product'].search(
                         [('default_code', '=', default_code)])
                     if product_id:
                         product_id[0].fci = fci_code
@@ -169,7 +169,7 @@ class L10nBrFciLine(models.Model):
     # guarda o id da fci pertencente
     l10n_br_fci_id = fields.Many2one('l10n_br.fci', u'Código do arquivo FCI',
                                      select=True)
-    product_id = fields.Many2one('product.template', string='Produto',
+    product_id = fields.Many2one('product.product', string='Produto',
                                  required=True, readonly=True)
     default_code = fields.Char(u'Código', related='product_id.default_code',
                                readonly=True)
