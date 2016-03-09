@@ -32,6 +32,7 @@
     ],
     'data': [
         'wizard/products_from_product_product_view.xml',
+        'security/ir.model.access.csv',
         'views/l10n_br_fci.xml',
         'workflow/fci_workflow.xml',
         'views/product.xml',

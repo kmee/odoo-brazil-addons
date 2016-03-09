@@ -53,7 +53,8 @@ class ProductFciFromProductProductLines(models.TransientModel):
                     'product_id': product.id,
                     'product_uom': product.uom_id.id,
                     'l10n_br_fci_id': active_id,
-                    'valor_parcela_importada': round(custo_importado, 2)
+                    'valor_parcela_importada': round(custo_importado, 2),
+                    'list_price': product.list_price,
                 }
                 fci_line_obj = self.env['l10n_br.fci.line']
                 fci_line_obj.create(vals)

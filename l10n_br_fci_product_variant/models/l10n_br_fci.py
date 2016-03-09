@@ -188,11 +188,8 @@ class L10nBrFciLine(models.Model):
         string='EAN13',
         related='product_id.ean13',
         readonly=True)
-    list_price = fields.Float(
-        string=u'Preço',
-        related='product_id.list_price')
     product_uom = fields.Many2one(
-        'product.uom',
+        'product_id.uom',
         required=True,
         readonly=True)
     fiscal_classification_id = fields.Char(
@@ -202,6 +199,8 @@ class L10nBrFciLine(models.Model):
     fci = fields.Char(
         string='FCI',
         readonly=True)
+    list_price = fields.Float(
+        string=u'Preço')
     valor_parcela_importada = fields.Float(
         string=u'Valor parcela importação')
     conteudo_importacao = fields.Float(
