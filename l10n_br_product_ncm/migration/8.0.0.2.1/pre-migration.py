@@ -1,9 +1,8 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 KMEE (http://www.kmee.com.br)
-#    @author Bianca Tella <bianca.tella@kmee.com.br>
-#    @author Luis Felipe Miléo <mileo@kmee.com.br>
+#    Author: Alexandre Fayolle
+#    Copyright 2014 Camptocamp SA
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,15 +19,16 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.openupgrade import openupgrade
+
+column_renames = {
+    'product_product': [
+        ('fci', None),
+        ('origin', None),
+    ],
+}
 
 
-class ProductProduct(models.Model):
-
-    _inherit = "product.product"
-
-    lines_ids = fields.Many2many('product_fci.from.product.product.lines',
-                                 'line_id', 'product_line_rel',
-                                 String='Produtos')
-    fci_lines = fields.One2many('l10n_br.fci.line', 'product_id',
-                                'Product lines')
+@openupgrade.migrate()
+def migrate(cr, version):
+    openupgrade.rename_columns(cr, column_renames)

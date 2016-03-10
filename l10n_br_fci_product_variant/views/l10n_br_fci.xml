@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <tree string="FCI_Empresa">
                     <field name="state" invisible="1"/>
+                    <field name="name"/>
                     <field name="company_id"/>
                     <field name="hash_code"/>
                     <field name="dt_recepcao"/>
@@ -74,6 +75,7 @@
                                 <field name="create_date"/>
                                 <field name="company_id"/>
                                 <field name="protocol_number"/>
+                                <field name="fci_auto_update"/>
                             </group>
                             <group string="Retorno">
                                 <field name="cod_recepcao"/>

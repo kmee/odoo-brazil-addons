@@ -27,6 +27,7 @@
     'category': 'Localization',
     'sequence': 64,
     'depends': [
+        'l10n_br_product_ncm',
         'l10n_br_account_product',
         'mrp',
     ],

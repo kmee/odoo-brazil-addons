@@ -38,47 +38,59 @@ class L10nBrFci(models.Model):
     hash_code = fields.Char('Hash', size=47, readonly=True,
                             invisible=True,
                             states={'waiting_fci': [('invisible', False)],
-                                    'aproved': [('invisible', False)]})
+                                    'aproved': [('invisible', False)]},
+                            copy=False)
     dt_recepcao = fields.Char(u'Data recepção', size=20, readonly=True,
                               invisible=True,
                               states={'waiting_fci': [('invisible', False)],
-                                      'aproved': [('invisible', False)]})
+                                      'aproved': [('invisible', False)]},
+                              copy=False)
     cod_recepcao = fields.Char(u'Código recepção', size=36, readonly=True,
                                invisible=True,
                                states={'waiting_fci': [('invisible', False)],
-                                       'aproved': [('invisible', False)]})
+                                       'aproved': [('invisible', False)]},
+                               copy=False)
     dt_validacao = fields.Char(u'Data validação', size=20, readonly=True,
                                invisible=True,
                                states={'waiting_fci': [('invisible', False)],
-                                       'aproved': [('invisible', False)]})
+                                       'aproved': [('invisible', False)]},
+                               copy=False)
     in_validacao = fields.Char(u'Validação', size=20, readonly=True,
                                invisible=True,
                                states={'waiting_fci': [('invisible', False)],
-                                       'aproved': [('invisible', False)]})
+                                       'aproved': [('invisible', False)]},
+                               copy=False)
     in_validacao_ficha = fields.Char(u'Validação ficha', size=20,
-                                     readonly=True)
+                                     readonly=True,
+                                     copy=False)
     protocol_number = fields.Char('Protocolo', invisible=True, readonly=True,
                                   states={'waiting_protocol': [
                                       ('invisible', False),
                                       ('readonly', False),
-                                      ('required', True)]})
+                                      ('required', True)]},
+                                  copy=False)
     state = fields.Selection([('draft', 'Rascunho'), ('waiting_protocol',
                                                       'Aguardando Protocolo'),
                               ('waiting_fci', 'Aguardando FCI'),
                               ('aproved', 'Aprovada')], default='draft')
     fci_line = fields.One2many('l10n_br.fci.line', 'l10n_br_fci_id',
                                'Product lines', copy=True)
-    fci_file_sent = fields.Binary('Arquivo de remessa', readonly=True)
+    fci_file_sent = fields.Binary('Arquivo de remessa', readonly=True,
+                                  copy=False)
     fci_file_returned = fields.Binary('Arquivo de retorno', filters='*.txt',
                                       invisible=True,
                                       states={'waiting_fci': [
-                                          ('invisible', False)]})
+                                          ('invisible', False)]},
+                                      copy=False)
     name = fields.Char('Nome',
                        default=lambda self: self.env['ir.sequence'].get(
-                           'fci.sequence.variant') or '', )
+                           'fci.sequence.variant') or '',
+                        copy=False)
     file_name = fields.Char('Nome',
                             default=lambda self: (self.env['ir.sequence'].get(
-                                'fci.sequence.variant') + '.txt') or '', )
+                                'fci.sequence.variant') + '.txt') or '',
+                            copy=False)
+    fci_auto_update = fields.Boolean("Atualizar a FCI dos produtos")
 
     @api.multi
     def action_create_fci(self):
@@ -90,6 +102,8 @@ class L10nBrFci(models.Model):
     @api.multi
     def import_fci(self):
         self.ensure_one()
+        if not self.fci_file_returned:
+            return False
         res_importados = fci.import_fci(self.fci_file_returned)
         company_id = self.env['res.company'].search(
             [('partner_id.cnpj_cpf', '=', res_importados['cnpj_cpf'])])
@@ -124,6 +138,8 @@ class L10nBrFci(models.Model):
                     for line, fci_code in zip(
                             self.fci_line, res_importados['fci_codes']):
                         line.fci = fci_code
+                        if self.fci_auto_update:
+                            self.product_id.fci = fci_code
 
                 # SE TUDO DER ERRADO
                 else:
@@ -159,12 +175,13 @@ class L10nBrFciLine(models.Model):
     _name = "l10n_br.fci.line"
     _description = "Linhas da FCI"
 
+    @api.multi
     @api.depends('list_price', 'valor_parcela_importada')
     def _calc_conteudo_importacao(self):
         for record in self:
-            if record.valor_parcela_importada:
+            if record.list_price:
                 record.conteudo_importacao = (
-                    (100 * record.valor_parcela_importada) / record.list_price)
+                    (100 * record.valor_parcela_importada or 0.00) / record.list_price)
 
     # guarda o id da fci pertencente
     l10n_br_fci_id = fields.Many2one(
@@ -189,7 +206,7 @@ class L10nBrFciLine(models.Model):
         related='product_id.ean13',
         readonly=True)
     product_uom = fields.Many2one(
-        'product_id.uom',
+        'product.uom',
         required=True,
         readonly=True)
     fiscal_classification_id = fields.Char(
