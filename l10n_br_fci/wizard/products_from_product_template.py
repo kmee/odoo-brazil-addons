@@ -27,8 +27,10 @@ class ProductFciFromProductTemplateLines(models.TransientModel):
     _name = "product_fci.from.product.template.lines"
     _description = "Produtos FCI"
 
-    products_ids = fields.Many2many('product.template', 'product_id',
-                                    'line_id', 'product_line_rel')
+    products_ids = fields.Many2many('product.template',
+                                    'product_id',
+                                    'line_id',
+                                    'product_line_rel')
 
     @api.multi
     def populate_l10n_br_fci(self):

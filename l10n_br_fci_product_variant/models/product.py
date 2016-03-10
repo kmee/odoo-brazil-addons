@@ -27,8 +27,8 @@ class ProductProduct(models.Model):
 
     _inherit = "product.product"
 
-    lines_ids = fields.Many2many('product_fci.from.product.product.lines',
-                                 'line_id', 'product_line_rel',
-                                 String='Produtos')
+    # lines_ids = fields.Many2many('product_fci.from.product.product.lines',
+    #                              'line_id', 'product_line_rel',
+    #                              String='Produtos')
     fci_lines = fields.One2many('l10n_br.fci.line', 'product_id',
                                 'Product lines')
