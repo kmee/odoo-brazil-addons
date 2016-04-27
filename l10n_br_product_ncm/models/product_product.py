@@ -37,7 +37,7 @@ class ProductProduct(models.Model):
     origin = fields.Selection(PRODUCT_ORIGIN, 'Origem')
     fci = fields.Char('FCI do Produto', size=36)
     fiscal_category_default_ids = fields.One2many(
-        'l10n_br_account.product.category', 'product_tmpl_id',
+        'l10n_br_account.product.category', 'product_product_id',
         u'Categoria de Operação Fiscal Padrões')
 
     @api.multi
@@ -106,7 +106,7 @@ class AccountFiscalPositionRule(models.Model):
             return result
         fiscal_category = self.env[
             'l10n_br_account.product.category'].search(
-            [('product_tmpl_id', '=', product_id),
+            [('product_product_id', '=', product_id),
              ('fiscal_category_source_id', '=', fiscal_category_id),
              '|', ('to_state_id', '=', False),
              ('to_state_id', '=', to_state_id)])
@@ -118,5 +118,5 @@ class AccountFiscalPositionRule(models.Model):
 class L10n_brAccountProductFiscalCategory(models.Model):
     _inherit = 'l10n_br_account.product.category'
 
-    product_tmpl_id = fields.Many2one(
+    product_product_id = fields.Many2one(
         'product.product', 'Produto', ondelete='cascade')
